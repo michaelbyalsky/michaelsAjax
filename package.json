@@ -1,0 +1,19 @@
+{
+  "name": "crud-example",
+  "version": "1.0.0",
+  "description": "example js app to demonstrate crud operations",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ajax",
+    "crud",
+    "javascript"
+  ],
+  "author": "tomeryp",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.2"
+  }
+}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJAX</title>
+</head>
+<body>
+    <h1>Crud</h1>
+    <div id="comm">
+        <span>crudcrud.com url</span>
+        <!-- <input type="text" name="crudcrud url" value="https://crudcrud.com/api/e91e84c4379c4fb39d7da86fa9c4063b"> -->
+        <input type="text" name="crudcrud url" value="https://crudcrud.com/api/6bacfb1b607f4ab9ac3df63641f02bc8">
+        <button onclick="load()">Connect</button>
+        <div class="error" style="color: red;"></div>
+    </div>
+    <div id="creation">
+        <input type="text" name="resource id" value="id" id="resource-id">
+        <input type="text" name="resource data" value="data" id="resource-data">
+        <button onclick="create()">Create</button>
+    </div>
+    <div id="resources"></div>
+    <script src="./node_modules/axios/dist/axios.min.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
