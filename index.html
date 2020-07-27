@@ -4,23 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AJAX</title>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <script src="./main.js"></script>  <!-- todo: change to type:module -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
     <h1>Crud</h1>
-    <div id="comm">
-        <span>crudcrud.com url</span>
-        <!-- <input type="text" name="crudcrud url" value="https://crudcrud.com/api/e91e84c4379c4fb39d7da86fa9c4063b"> -->
-        <input type="text" name="crudcrud url" value="https://crudcrud.com/api/6bacfb1b607f4ab9ac3df63641f02bc8">
-        <button onclick="load()">Connect</button>
+    <div id="create">
+        <input type="text" name="collection id" class="collection-id" placeholder="collection id">
+        <button onclick="create()">Create</button>
+        <br>
+        <textarea name="json data" id="json-data" placeholder="json string" rows="10" cols="100"></textarea>
         <div class="error" style="color: red;"></div>
     </div>
-    <div id="creation">
-        <input type="text" name="resource id" value="id" id="resource-id">
-        <input type="text" name="resource data" value="data" id="resource-data">
-        <button onclick="create()">Create</button>
+    <div id="read">
+        <input type="text" name="collection id" class="collection-id" placeholder="collection id">
+        <button onclick="read()">Read</button>
+        <br>
+        <textarea name="json data" id="json-data" placeholder="json string" rows="10" cols="100" readonly></textarea>
+        <div class="error" style="color: red;"></div>
     </div>
-    <div id="resources"></div>
-    <script src="./node_modules/axios/dist/axios.min.js"></script>
-    <script src="main.js"></script>
+    <!-- <form method="post" action="https://formbucket.com/f/buk_Tzkz6s6cWcskOuroUpmtcIMl">
+        <input type="email" name="email"/>
+        <input type="submit"/>
+        <input type="reset" />
+    </form> -->
 </body>
 </html>

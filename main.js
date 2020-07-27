@@ -1,96 +1,63 @@
-function showError(error) {
-  const errorElement = document.querySelector("#comm > .error");
-  errorElement.hidden = false;
-  errorElement.innerText = error;
-}
+const COLLECTION_ID = "5f1d6d37c58dc34bf5dafba4";
+const API_URL = "https://api.jsonbin.io/v3/b"; // todo: use API v2
+let API_KEY = "";
+import("./secret.js").then(m => API_KEY = m.API_KEY); // todo: use `import {API_KEY} from "./secret.js"`
 
-async function showResources(resources) {
-  for (const resource of resources) {
-    const data = await readResource(resource);
-    console.log(resource, data);
+function createBin(binName, data) {
+  const jsonString = JSON.stringify(data); // todo: make jsonString a two spaced indented json
+  console.log("creating a bin with data: ", jsonString);
+  const options = {
+    method: "POST", // todo: use instance methods
+    headers: { // todo: use axios default headers
+      "Content-Type": "application/json; charset=utf-8",
+      "X-COLLECTION-ID": COLLECTION_ID,
+      "X-Bin-Name": binName,
+      "X-Master-Key": API_KEY
+    },
+    data: jsonString,
+    url: API_URL // todo: use axios default base_url
   }
+  return axios(options) // todo: use await
+    .then(res => res.data) // todo: use axios interceptor to return the data
+    .catch(e => Promise.reject(`${e.message} : '${e.response.data.message}'`)); // todo: use axios interceptor to return create error message
 }
 
-function load() {
-  const input = document.querySelector("#comm > input").value;
-  document.querySelector("#comm > .error").hidden = true;
-  // ex: https://crudcrud.com/api/8fcdeea6a0984bcd965093ca68cdc93c
-  const urlRegex = /https:\/\/crudcrud.com\/api\/[a-f0-9]{32}$/;
-
-  if (input != "" && !urlRegex.test(input)) {
-    showError(`invalid url: ${input}`);
-    return;
+function readBin(collectionId) { // todo: use same function for all CRUD
+  const options = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "X-COLLECTION-ID": COLLECTION_ID,
+      "X-Master-Key": API_KEY
+    },
+    url: API_URL
   }
-  initComm(input)
-  .then(showResources)
-  .catch((e) => {
-      showError(`can't connect to url: ${input}`);
-  })
+  return axios(options)
+    .then(res => res.data)
+    .catch(e => Promise.reject(`${e.message} : '${e.response.data.message}'`));
 }
 
-const DEFAULT_RESOURCE_NAME = "todo-list";
-
-async function createResource(resource, data) {
-  return fetch(`${baseURL}/${resource}`, {method: "POST"}).then(r=>r.json()).catch(e=>console.log("!"));
-  // return axios.post("/" + resource, data).then((r) => r.data);
+function create() {
+  const collectionId = document.querySelector("#create > .collection-id").value; // todo: use "object destructuring with alias"
+  const jsonString = document.querySelector("#create > textarea").value;
+  const jsonData = JSON.parse(jsonString); // todo: validate json, show error if not valid
+ 
+  createBin("some name", jsonData)
+    .then(res => console.log(res))
+    .catch(error => {
+      document.querySelector("#create > .error").innerText = error;
+      console.error("error creating bin: ", error);
+    });
 }
 
-function readAllResources() {
-  return fetch(baseURL).then(r=>r.json());
-  // return axios.get("/").then((r) => r.data, e=>console.log("!!!"));
-}
-
-function readResource(id) {
-  return fetch(`${baseURL}/${id}`).then(r=>r.json()).then(j=>j.data);
-  // return axios.get("/" + id).then((r) => r.data);
-}
-
-function updateResources(id, data) {
-  return axios.put("/" + id, data).then((r) => r.data);
-}
-
-function deleteResources() {
-  return axios.get("/").then((r) => r.data);
-}
-
-let connected = false;
-let baseURL;
-
-async function initComm(url) {
-  /*
-  let req = new XMLHttpRequest();
-
-req.onreadystatechange = () => {
-  if (req.readyState == XMLHttpRequest.DONE) {
-    console.log(req.responseText);
-  }
-};
-
-req.open("GET", "https://api.jsonbin.io/b/<BIN_ID>", true);
-req.setRequestHeader("secret-key", "<SECRET_KEY>");
-req.send();
-  */
-  baseURL = url;
-  axios.defaults.baseURL = url;
-  axios.defaults.headers.post["Content-Type"] = "application/json; charset=utf-8";
-  axios.defaults.validateStatus = (status) => status >= 200 && status < 300;
-  try {
-    connected = true;
-    const resources = await readAllResources();
-    console.log({ resources });
-    return resources;
-  } catch (e) {
-    connected = false;
-    throw "Could not connect";
-  }
-}
-
-async function create() {
-  const id = document.querySelector("#resource-id").value;
-  const data = document.querySelector("#resource-data").value;
-  try {
-    const res = await createResource(id, data).catch(e=>console.log(e));
-  } catch (e) {
-    showError(e);
-  }
+function read() {
+  const collectionId = document.querySelector("#read > .collection-id").value; // todo: use "object destructuring with alias"
+  readBin(collectionId)
+    .then(res => {
+      document.querySelector("#read > textarea").value = res;
+    })
+    .catch(error => {
+      document.querySelector("#read > .error").innerText = error;
+      console.error("error reading bin: ", error);
+    });
 }
