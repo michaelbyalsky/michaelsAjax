@@ -1,63 +1,68 @@
-const COLLECTION_ID = "5f1d6d37c58dc34bf5dafba4";
-const API_URL = "https://api.jsonbin.io/v3/b"; // todo: use API v2
-let API_KEY = "";
-import("./secret.js").then(m => API_KEY = m.API_KEY); // todo: use `import {API_KEY} from "./secret.js"`
-
-function createBin(binName, data) {
-  const jsonString = JSON.stringify(data); // todo: make jsonString a two spaced indented json
-  console.log("creating a bin with data: ", jsonString);
-  const options = {
-    method: "POST", // todo: use instance methods
-    headers: { // todo: use axios default headers
-      "Content-Type": "application/json; charset=utf-8",
-      "X-COLLECTION-ID": COLLECTION_ID,
-      "X-Bin-Name": binName,
-      "X-Master-Key": API_KEY
-    },
-    data: jsonString,
-    url: API_URL // todo: use axios default base_url
-  }
-  return axios(options) // todo: use await
-    .then(res => res.data) // todo: use axios interceptor to return the data
-    .catch(e => Promise.reject(`${e.message} : '${e.response.data.message}'`)); // todo: use axios interceptor to return create error message
+// fix bug1: dont load metadata
+// fix bug2: make delete and save enabled only when json is loaded
+// fix bug3: handle prompt cancellation gracefully
+function loadBin() {
+  const binId = prompt("binId"); // todo later: ask and load by bin name and not id
+  read(binId)
+    .then(res => { // todo: use await
+      document.querySelector("#error").hidden = true;
+      const binData = JSON.stringify(res); // fix: make jsonString a two spaced indented json
+      console.log(`loaded bin: ${binId}`, binData);
+      document.querySelector("#view > textarea").value = binData;
+    })
+    .catch(error => { // todo: move functionality to a dedicated function to handle and display and all user errors
+      document.querySelector("#error").hidden = false;
+      document.querySelector("#error").innerText = error;
+      console.error("error reading bin: ", error);
+    });
 }
 
-function readBin(collectionId) { // todo: use same function for all CRUD
-  const options = {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      "X-COLLECTION-ID": COLLECTION_ID,
-      "X-Master-Key": API_KEY
-    },
-    url: API_URL
-  }
-  return axios(options)
-    .then(res => res.data)
-    .catch(e => Promise.reject(`${e.message} : '${e.response.data.message}'`));
-}
+function newBin() { // todo: confirm() wether to delete unsaved work
+  const binName = prompt("bin name"); // todo: replace prompt with querying an <input>
+  const binData = {hello: "world"};
 
-function create() {
-  const collectionId = document.querySelector("#create > .collection-id").value; // todo: use "object destructuring with alias"
-  const jsonString = document.querySelector("#create > textarea").value;
-  const jsonData = JSON.parse(jsonString); // todo: validate json, show error if not valid
- 
-  createBin("some name", jsonData)
-    .then(res => console.log(res))
+  create(binName, binData) // todo: use await
+    .then(res => {
+      document.querySelector("#error").hidden = true;
+      console.log(`Created bin ${binName} with data`, res); // fix: display to the user the content of the json and metadata
+      document.getElementById("metadata").innerText = res.metadata.id;
+    })
     .catch(error => {
-      document.querySelector("#create > .error").innerText = error;
+      document.querySelector("#error").hidden = false;
+      document.querySelector("#error").innerText = error;
       console.error("error creating bin: ", error);
     });
 }
 
-function read() {
-  const collectionId = document.querySelector("#read > .collection-id").value; // todo: use "object destructuring with alias"
-  readBin(collectionId)
+function saveBin() {
+  const binId = document.getElementById("metadata").innerText;
+  const binData = document.querySelector("#view > textarea").value;  // exercise: use "object destructuring with alias"
+
+  update(binId, binData)
     .then(res => {
-      document.querySelector("#read > textarea").value = res;
+      document.querySelector("#error").hidden = true;
+      console.log(`Updated bin ${binId} with data`, res); // fix: display to the user the content of the json and metadata
     })
     .catch(error => {
-      document.querySelector("#read > .error").innerText = error;
-      console.error("error reading bin: ", error);
+      document.querySelector("#error").hidden = false;
+      document.querySelector("#error").innerText = error;
+      console.error("error creating bin: ", error);
+    });
+}
+
+// fix: deleting an empty bin
+// fix: remove metadata when deleted
+function deleteBin() {
+  const binId = document.getElementById("metadata").innerText;
+
+  destroy(binId)
+    .then(res => {
+      document.querySelector("#error").hidden = true;
+      console.log(`Deleted bin ${binId} with data`, res);
+    })
+    .catch(error => {
+      document.querySelector("#error").hidden = false;
+      document.querySelector("#error").innerText = error;
+      console.error("error creating bin: ", error);
     });
 }
