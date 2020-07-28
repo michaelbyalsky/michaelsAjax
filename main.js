@@ -1,5 +1,4 @@
 // fix: dont load metadata
-// fix: make delete and save enabled only when json is loaded
 // fix: handle prompt cancellation gracefully
 function loadBin() {
   const binId = prompt("binId"); // todo later: ask and load by bin name and not id
@@ -50,8 +49,6 @@ function saveBin() {
     });
 }
 
-// fix: dont allow deleting an empty bin
-// fix: remove metadata when deleted
 function deleteBin() {
   const binId = document.getElementById("metadata").innerText;
 
