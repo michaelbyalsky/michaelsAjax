@@ -1,6 +1,6 @@
-// fix bug1: dont load metadata
-// fix bug2: make delete and save enabled only when json is loaded
-// fix bug3: handle prompt cancellation gracefully
+// fix: dont load metadata
+// fix: make delete and save enabled only when json is loaded
+// fix: handle prompt cancellation gracefully
 function loadBin() {
   const binId = prompt("binId"); // todo later: ask and load by bin name and not id
   read(binId)
@@ -10,7 +10,7 @@ function loadBin() {
       console.log(`loaded bin: ${binId}`, binData);
       document.querySelector("#view > textarea").value = binData;
     })
-    .catch(error => { // todo: move functionality to a dedicated function to handle and display and all user errors
+    .catch(error => { // todo later: move functionality to a dedicated function to handle and display and all user errors
       document.querySelector("#error").hidden = false;
       document.querySelector("#error").innerText = error;
       console.error("error reading bin: ", error);
@@ -18,7 +18,7 @@ function loadBin() {
 }
 
 function newBin() { // todo: confirm() wether to delete unsaved work
-  const binName = prompt("bin name"); // todo: replace prompt with querying an <input>
+  const binName = prompt("bin name"); // todo later: replace prompt with querying an <input>
   const binData = {hello: "world"};
 
   create(binName, binData) // todo: use await
@@ -50,7 +50,7 @@ function saveBin() {
     });
 }
 
-// fix: deleting an empty bin
+// fix: dont allow deleting an empty bin
 // fix: remove metadata when deleted
 function deleteBin() {
   const binId = document.getElementById("metadata").innerText;

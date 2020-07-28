@@ -7,15 +7,15 @@
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <script src="./main.js"></script>
     <script src="./ajax.js"></script>  <!-- todo: change to type:module -->
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script> <!-- todo later: use a local copy installed via npm -->
 </head>
 <body>
     <h1>Crud</h1>
     <div id="control">
-        <button onclick="loadBin()">Load</button>
         <button onclick="newBin()">New</button>
-        <button onclick="deleteBin()">Delete</button>
+        <button onclick="loadBin()">Load</button>
         <button onclick="saveBin()">Save</button>
+        <button onclick="deleteBin()">Delete</button>
     </div>
     <div id="view">
         <!-- todo: make editable only when bin is loaded -->
